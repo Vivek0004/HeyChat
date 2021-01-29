@@ -1,7 +1,8 @@
 const path = require("path");
 const http = require("http");
-const express = require("express");
+
 const socketio = require("socket.io");
+const express = require("express");
 
 const app = express();
 const server = http.createServer(app);
@@ -13,15 +14,21 @@ app.use(express.static(documentDirPath));
 
 
 io.on("connection", (socket) => {
-  console.log("New Websocket Connection");
-//   socket.emit("countUpdated", count);
-//   socket.on("increment", () => {
-//     count++;
-//     io.emit("countUpdated", count);
-//   });
+
     socket.emit('message', 'Welcome to ChatSome')
+
+    socket.broadcast.emit('message', 'A new user just joined')
+
     socket.on('sendMessage', (message) => {
         io.emit('message', message)
+    })
+
+    socket.on('sendLocation', (coords) => {
+      io.emit('message','https://google.com/maps?q='+ coords.latitude+','+coords.longitude)
+    })
+
+    socket.on('disconnect', () => {
+      io.emit('message','a user has left!')
     })
 });
 

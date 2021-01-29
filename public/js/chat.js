@@ -12,13 +12,16 @@ document.querySelector('#message-form').addEventListener('submit',(e) => {
     socket.emit('sendMessage', message)
 })
 
-// socket.on('countUpdated', (count) => {
-//     console.log('The button is clicked '+count+' times.')
-    
-// })
+document.querySelector('#send-location').addEventListener('click', (e) => {
+    e.preventDefault()
+    if(!navigator.geolocation) {
+        return alert('Your browser doesn\'t support Geolocation')
+    }
 
-// document.querySelector('#increment').addEventListener('click', () => {
-//     console.log('Clicked')
-
-//     socket.emit('increment')
-// })
+    navigator.geolocation.getCurrentPosition((position) => {
+        socket.emit('sendLocation', {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+    })
+})
